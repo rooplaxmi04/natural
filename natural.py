@@ -106,6 +106,5 @@ if 'disaster' in locals():
 else:
     st.error("Failed to load data. Please check the file path and ensure the dataset is correctly formatted.")
 
-# Optional: Customize color palette and add theme consistency with Matplotlib and Seaborn
+# Optional: Customize color palette and add theme consistency with Seaborn
 sns.set_palette("Set2")
-plt.style.use('seaborn-white')  # Corrected style
