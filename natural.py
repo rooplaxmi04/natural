@@ -8,7 +8,7 @@ st.set_page_config(page_title="Disaster Data Dashboard", page_icon="🌎", layou
 
 # Load data
 try:
-    disaster = pd.read_csv("1900_2021_DISASTERS.csv")  # Ensure the correct CSV file path here
+    disaster = pd.read_csv("1900_2021_DISASTERS.xlsx - emdat data.csv")  # Ensure the correct CSV file path here
 except FileNotFoundError:
     st.error("The dataset file was not found. Please check the file path and format.")
 
