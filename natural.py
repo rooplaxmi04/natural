@@ -8,7 +8,7 @@ st.set_page_config(page_title="Disaster Data Dashboard", page_icon="🌎", layou
 
 # Load data
 try:
-    disaster = pd.read_csv("1900_2021_DISASTERS.xlsx - emdat data.csv")  # Ensure the correct CSV file path here
+    disaster = pd.read_csv("1900_2021_DISASTERS.xlsx - emdat data.csv")  # Make sure this file is in the correct path
 except FileNotFoundError:
     st.error("The dataset file was not found. Please check the file path and format.")
 
@@ -34,6 +34,7 @@ if 'disaster' in locals():
     plt.xlabel("Year")
     plt.ylabel("Disaster Count")
     st.pyplot(plt)
+    plt.clf()  # Clear the figure for next plot
 
     # Count of Each Disaster Type
     st.write("### 🌪️ Count of Each Disaster Type")
@@ -44,6 +45,7 @@ if 'disaster' in locals():
     plt.xlabel("Disaster Type")
     plt.ylabel("Count")
     st.pyplot(plt)
+    plt.clf()
 
     # Top 10 Countries with Most Deaths Due to Natural Disasters
     st.write("### 🏴 Top 10 Countries with Most Deaths Due to Natural Disasters")
@@ -55,6 +57,7 @@ if 'disaster' in locals():
         plt.xlabel('Country')
         plt.ylabel('Total Deaths')
         st.pyplot(plt)
+        plt.clf()
     else:
         st.warning("Total Deaths column not found in dataset.")
 
@@ -68,6 +71,7 @@ if 'disaster' in locals():
         plt.xlabel('Disaster Type')
         plt.ylabel('Total Deaths')
         st.pyplot(plt)
+        plt.clf()
 
     # Total Deaths in China by Disaster Type
     st.write("### 🇨🇳 Total Deaths in China by Disaster Type")
@@ -80,6 +84,7 @@ if 'disaster' in locals():
         plt.xlabel('Disaster Type')
         plt.ylabel('Total Deaths')
         st.pyplot(plt)
+        plt.clf()
 
     # Disaster Subgroups for Each Disaster Group
     st.write("### 🌋 Disaster Subgroups by Disaster Group")
@@ -91,6 +96,7 @@ if 'disaster' in locals():
             plt.title(f'Disaster Subgroups for {disaster_type}')
             plt.ylabel('')
             st.pyplot(plt)
+            plt.clf()
     else:
         st.warning("Disaster Group or Disaster Subgroup columns not found in dataset.")
 
@@ -102,4 +108,4 @@ else:
 
 # Optional: Customize color palette and add theme consistency with Matplotlib and Seaborn
 sns.set_palette("Set2")
-plt.style.use('seaborn-whitegrid')
+plt.style.use('seaborn-white')  # Corrected style
