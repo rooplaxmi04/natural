@@ -12,16 +12,52 @@ try:
 except FileNotFoundError:
     st.error("The dataset file was not found. Please check the file path and format.")
 
+# Customizing the layout using markdown and CSS for a cleaner look
+st.markdown("""
+    <style>
+        .reportview-container {
+            background: #f4f4f9;
+            color: #333;
+        }
+        .sidebar .sidebar-content {
+            background: #2d3a4b;
+            color: white;
+        }
+        .stSelectbox div {
+            background-color: #f7f7f7;
+            color: #333;
+            font-weight: bold;
+        }
+        .stButton>button {
+            background-color: #4caf50;
+            color: white;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+        }
+        .stButton>button:hover {
+            background-color: #45a049;
+        }
+        .stMarkDown {
+            font-family: 'Arial', sans-serif;
+        }
+        .stSelectbox {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Sidebar for additional options
 st.sidebar.header("Dashboard Navigation")
 st.sidebar.write("Use the dropdown to explore different sections of the disaster data.")
 
 # Dashboard title and introduction
 st.title("🌎 Disaster Data Dashboard")
-st.write("""
-Welcome to the Disaster Data Dashboard! This interactive dashboard allows you to explore data on natural disasters worldwide.
-Use the dropdown menu to select the visualization you want to explore.
-""")
+st.markdown("""
+    Welcome to the Disaster Data Dashboard! This interactive dashboard allows you to explore data on natural disasters worldwide.
+    Use the dropdown menu to select the visualization you want to explore.
+""", unsafe_allow_html=True)
 
 # Dropdown menu to select the graph
 section = st.selectbox(
@@ -96,4 +132,5 @@ else:
 
 # Optional: Customize color palette and add theme consistency with Seaborn
 sns.set_palette("Set2")
+
 
