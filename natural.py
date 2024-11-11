@@ -77,6 +77,7 @@ if 'disaster' in locals():
         plt.title("Total Deaths by Disaster Type")
         plt.xlabel("Disaster Type")
         plt.ylabel("Total Deaths")
+        plt.xticks(rotation=45, ha='right')
         st.pyplot(plt)
         plt.clf()
 
