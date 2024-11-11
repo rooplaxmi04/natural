@@ -31,7 +31,6 @@ section = st.sidebar.selectbox(
     [
         "Dataset Overview", 
         "Disaster Trends Over Time", 
-        "Top Countries by Deaths and Damage", 
         "Deaths by Disaster Type", 
         "Geographical Map of Disasters", 
         "Correlations in Data"
@@ -67,27 +66,7 @@ if 'disaster' in locals():
             st.pyplot(plt)
             plt.clf()
 
-    # Top Countries by Deaths and Damage
-    elif section == "Top Countries by Deaths and Damage":
-        st.write("### 🏆 Top 10 Countries by Deaths and Economic Damage")
-        deaths_by_country = disaster.groupby('Country')['Total Deaths'].sum().nlargest(10)
-        damage_by_country = disaster.groupby('Country')['Total Damages'].sum().nlargest(10)
-
-        # Plot Deaths
-        fig1, ax1 = plt.subplots(figsize=(10, 5))
-        deaths_by_country.plot(kind='bar', ax=ax1, color='#dd8452')
-        ax1.set_title("Top 10 Countries by Total Deaths")
-        ax1.set_xlabel("Country")
-        ax1.set_ylabel("Total Deaths")
-        st.pyplot(fig1)
-        
-        # Plot Economic Damage
-        fig2, ax2 = plt.subplots(figsize=(10, 5))
-        damage_by_country.plot(kind='bar', ax=ax2, color='#55a868')
-        ax2.set_title("Top 10 Countries by Economic Damage")
-        ax2.set_xlabel("Country")
-        ax2.set_ylabel("Total Damages (in USD)")
-        st.pyplot(fig2)
+   
 
     # Deaths by Disaster Type
     elif section == "Deaths by Disaster Type":
