@@ -1,136 +1,84 @@
-import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import streamlit as st
 
-# Set page config for Streamlit
-st.set_page_config(page_title="Disaster Data Dashboard", page_icon="🌎", layout="wide")
+# Load Data
+disaster = pd.read_csv("/content/1900_2021_DISASTERS.xlsx - emdat data.csv")
 
-# Load data
-try:
-    disaster = pd.read_csv("1900_2021_DISASTERS.xlsx - emdat data.csv")  # Make sure this file is in the correct path
-except FileNotFoundError:
-    st.error("The dataset file was not found. Please check the file path and format.")
+# Set the title of the app
+st.title("Global Natural Disaster Analysis")
 
-# Customizing the layout using markdown and CSS for a cleaner look
-st.markdown("""
-    <style>
-        .reportview-container {
-            background: #f4f4f9;
-            color: #333;
-        }
-        .sidebar .sidebar-content {
-            background: #2d3a4b;
-            color: white;
-        }
-        .stSelectbox div {
-            background-color: #f7f7f7;
-            color: #333;
-            font-weight: bold;
-        }
-        .stButton>button {
-            background-color: #4caf50;
-            color: white;
-            border-radius: 8px;
-            border: none;
-            font-size: 16px;
-        }
-        .stButton>button:hover {
-            background-color: #45a049;
-        }
-        .stMarkDown {
-            font-family: 'Arial', sans-serif;
-        }
-        .stSelectbox {
-            font-size: 16px;
-            font-weight: bold;
-        }
-    </style>
-""", unsafe_allow_html=True)
+# Sidebar with options
+st.sidebar.title("Dashboard Filters")
+disaster_type = st.sidebar.selectbox("Select Disaster Type", disaster['Disaster Type'].unique())
+country = st.sidebar.selectbox("Select Country", disaster['Country'].unique())
 
-# Sidebar for additional options
-st.sidebar.header("Dashboard Navigation")
-st.sidebar.write("Use the dropdown to explore different sections of the disaster data.")
+# Display the DataFrame (optional)
+st.write("Disaster Data Overview", disaster.head())
 
-# Dashboard title and introduction
-st.title("🌎 Disaster Data Dashboard")
-st.markdown("""
-    Welcome to the Disaster Data Dashboard! This interactive dashboard allows you to explore data on natural disasters worldwide.
-    Use the dropdown menu to select the visualization you want to explore.
-""", unsafe_allow_html=True)
+# Create a line plot for yearly disaster count trend
+st.subheader('Yearly Disaster Count Trend')
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.lineplot(data=disaster, x='Year', y='Disaster Type', ax=ax)
+ax.set_title('Yearly Disaster Count Trend')
+st.pyplot(fig)
 
-# Dropdown menu to select the graph
-section = st.selectbox(
-    "Select a section to view:",
-    ["Top 10 Countries with Most Deaths", 
-     "Total Deaths by Disaster Type", 
-     "Total Deaths in China by Disaster Type", 
-     "Disaster Subgroups by Disaster Group"]
-)
+# Display total counts of disaster types as a bar plot
+st.subheader('Count of Each Disaster Type')
+disaster_counts = disaster['Disaster Type'].value_counts()
+fig, ax = plt.subplots(figsize=(10, 6))
+disaster_counts.plot(kind='bar', color='skyblue', ax=ax)
+ax.set_title("Count of Each Disaster Type")
+ax.set_xlabel("Disaster Type")
+ax.set_ylabel("Count")
+st.pyplot(fig)
 
-# Check if data is loaded
-if 'disaster' in locals():
-    if section == "Top 10 Countries with Most Deaths":
-        st.write("### 🏴 Top 10 Countries with Most Deaths Due to Natural Disasters")
-        if 'Total Deaths' in disaster.columns:
-            deaths_by_country = disaster.groupby('Country')['Total Deaths'].sum().sort_values(ascending=False)
-            plt.figure(figsize=(10, 5))
-            deaths_by_country.head(10).plot(kind='bar', color='#dd8452')
-            plt.title('Top 10 Countries with Most Deaths Due to Natural Disasters')
-            plt.xlabel('Country')
-            plt.ylabel('Total Deaths')
-            st.pyplot(plt)
-            plt.clf()
-        else:
-            st.warning("Total Deaths column not found in dataset.")
+# Top 10 countries with most deaths due to natural disasters
+st.subheader('Top 10 Countries with Most Deaths Due to Natural Disasters')
+deaths_by_country = disaster.groupby('Country')['Total Deaths'].sum().sort_values(ascending=False)
+fig, ax = plt.subplots(figsize=(10, 6))
+deaths_by_country.head(10).plot(kind='bar', color='skyblue', ax=ax)
+ax.set_title('Top 10 Countries with Most Deaths Due to Natural Disasters')
+ax.set_xlabel('Country')
+ax.set_ylabel('Total Deaths')
+st.pyplot(fig)
 
-    elif section == "Total Deaths by Disaster Type":
-        st.write("### ⚰️ Total Deaths by Disaster Type")
-        if 'Total Deaths' in disaster.columns:
-            deaths_by_disaster = disaster.groupby('Disaster Type')['Total Deaths'].sum().sort_values(ascending=False)
-            plt.figure(figsize=(10, 5))
-            deaths_by_disaster.plot(kind='bar', color='#55a868')
-            plt.title('Total Deaths by Disaster Type')
-            plt.xlabel('Disaster Type')
-            plt.ylabel('Total Deaths')
-            st.pyplot(plt)
-            plt.clf()
+# Total deaths by disaster type
+st.subheader('Total Deaths by Disaster Type')
+deaths_by_disaster = disaster.groupby('Disaster Type')['Total Deaths'].sum().sort_values(ascending=False)
+fig, ax = plt.subplots(figsize=(10, 6))
+deaths_by_disaster.plot(kind='bar', color='coral', ax=ax)
+ax.set_title('Total Deaths by Disaster Type')
+ax.set_xlabel('Disaster Type')
+ax.set_ylabel('Total Deaths')
+st.pyplot(fig)
 
-    elif section == "Total Deaths in China by Disaster Type":
-        st.write("### 🇨🇳 Total Deaths in China by Disaster Type")
-        if 'Total Deaths' in disaster.columns:
-            china_data = disaster[disaster['Country'] == 'China']
-            china_deaths_by_disaster = china_data.groupby('Disaster Type')['Total Deaths'].sum()
-            plt.figure(figsize=(10, 5))
-            china_deaths_by_disaster.plot(kind='bar', color='#c44e52')
-            plt.title('Total Deaths in China by Disaster Type')
-            plt.xlabel('Disaster Type')
-            plt.ylabel('Total Deaths')
-            st.pyplot(plt)
-            plt.clf()
+# Total deaths in a specific country (e.g., China)
+china_data = disaster[disaster['Country'] == 'China']
+china_deaths_by_disaster = china_data.groupby('Disaster Type')['Total Deaths'].sum()
+st.subheader('Total Deaths in China by Disaster Type')
+fig, ax = plt.subplots(figsize=(10, 6))
+china_deaths_by_disaster.plot(kind='bar', color='skyblue', ax=ax)
+ax.set_title('Total Deaths in China by Disaster Type')
+ax.set_xlabel('Disaster Type')
+ax.set_ylabel('Total Deaths')
+st.pyplot(fig)
 
-    elif section == "Disaster Subgroups by Disaster Group":
-        st.write("### 🌋 Disaster Subgroups by Disaster Group")
-        if 'Disaster Group' in disaster.columns and 'Disaster Subgroup' in disaster.columns:
-            disaster_subgroup_count = disaster.groupby(['Disaster Group', 'Disaster Subgroup']).size().unstack()
-            for disaster_type in disaster_subgroup_count.index:
-                plt.figure(figsize=(6, 6))
-                disaster_subgroup_count.loc[disaster_type].plot(kind='pie', autopct='%1.1f%%', startangle=90, colors=sns.color_palette("pastel"))
-                plt.title(f'Disaster Subgroups for {disaster_type}')
-                plt.ylabel('')
-                st.pyplot(plt)
-                plt.clf()
-        else:
-            st.warning("Disaster Group or Disaster Subgroup columns not found in dataset.")
+# Disaster subgroup analysis
+st.subheader('Disaster Subgroups Analysis')
+disaster_subgroup_count = disaster.groupby(['Disaster Group', 'Disaster Subgroup']).size().unstack()
 
-    # Footer
-    st.write("---")
-    st.write("💡 *Tip*: Use the dropdown to quickly navigate to different sections.")
+for disaster_type in disaster_subgroup_count.index:
+    st.write(f"Disaster Subgroups for {disaster_type}")
+    fig, ax = plt.subplots(figsize=(6, 6))
+    disaster_subgroup_count.loc[disaster_type].plot(kind='pie', autopct='%1.1f%%', startangle=90, ax=ax)
+    ax.set_title(f'Disaster Subgroups for {disaster_type}')
+    ax.set_ylabel('')
+    st.pyplot(fig)
 
-else:
-    st.error("Failed to load data. Please check the file path and ensure the dataset is correctly formatted.")
+           
 
-# Optional: Customize color palette and add theme consistency with Seaborn
-sns.set_palette("Set2")
+           
 
-
+  
