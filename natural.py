@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 
 # Set page configuration for Streamlit
-st.set_page_config(page_title="Enhanced Disaster Data Dashboard", page_icon="🌎", layout="wide")
+st.set_page_config(page_title="Enhanced Disaster Data ", page_icon="🌎", layout="wide")
 
 # Load data
 try:
